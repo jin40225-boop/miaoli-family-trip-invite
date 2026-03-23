@@ -1,32 +1,54 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import React from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { 
-  ChevronDown, 
-  MapPin, 
-  Utensils, 
-  Accessibility, 
-  Palette, 
-  Heart, 
-  ShieldCheck, 
-  Clock, 
-  Gift,
+import {
+  Accessibility,
+  ChevronDown,
+  Clock,
+  Heart,
+  MapPin,
+  Palette,
   Phone,
-  Sparkles
+  ShieldCheck,
+  Sparkles,
+  Utensils,
 } from 'lucide-react';
 
-const FadeInWhenVisible = ({ children, delay = 0, className = "", key }: { children: React.ReactNode, delay?: number, className?: string, key?: React.Key }) => {
+type ImageSectionProps = {
+  src: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  reverse?: boolean;
+};
+
+type FeatureCardProps = {
+  image: string;
+  title: string;
+  description: string;
+};
+
+type TimelineItemProps = {
+  time: string;
+  title: string;
+  desc: string;
+  icon: React.ReactNode;
+};
+
+const FadeInWhenVisible = ({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) => {
   return (
     <motion.div
-      key={key}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 1.2, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: '-80px' }}
+      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -34,97 +56,221 @@ const FadeInWhenVisible = ({ children, delay = 0, className = "", key }: { child
   );
 };
 
-const ImageSection = ({ src, title, subtitle, description, reverse = false }: { src: string, title: string, subtitle: string, description: string, reverse?: boolean }) => {
+const ImageSection = ({
+  src,
+  title,
+  subtitle,
+  description,
+  reverse = false,
+}: ImageSectionProps) => {
   return (
-    <section className={`py-24 px-6 sm:px-12 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 max-w-6xl mx-auto`}>
+    <section
+      className={`py-24 px-6 sm:px-12 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 max-w-6xl mx-auto`}
+    >
       <div className="w-full md:w-1/2">
         <FadeInWhenVisible>
-          <div className="relative group overflow-hidden rounded-2xl shadow-2xl">
-            <img 
-              src={src} 
-              alt={title} 
-              className="w-full h-[300px] sm:h-[450px] object-cover transform group-hover:scale-105 transition-transform duration-700"
-              referrerPolicy="no-referrer"
+          <div className="relative group overflow-hidden rounded-3xl shadow-2xl shadow-black/10">
+            <img
+              src={src}
+              alt={title}
+              className="w-full h-[320px] sm:h-[460px] object-cover transform group-hover:scale-105 transition-transform duration-700"
+              loading="lazy"
             />
-            <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
           </div>
         </FadeInWhenVisible>
       </div>
       <div className="w-full md:w-1/2 space-y-6">
-        <FadeInWhenVisible delay={0.2}>
-          <span className="text-hakka-blue font-bold tracking-widest text-sm uppercase">{subtitle}</span>
-          <h2 className="serif-title text-3xl sm:text-4xl text-soft-black mt-2 leading-tight">{title}</h2>
-          <p className="text-gray-500 leading-loose text-lg mt-6 font-light">
-            {description}
-          </p>
+        <FadeInWhenVisible delay={0.15}>
+          <span className="text-hakka-blue font-bold tracking-[0.18em] text-sm uppercase">{subtitle}</span>
+          <h2 className="serif-title text-3xl sm:text-5xl text-soft-black mt-2 leading-tight">{title}</h2>
+          <p className="text-gray-500 leading-loose text-lg mt-6 font-light">{description}</p>
         </FadeInWhenVisible>
       </div>
     </section>
   );
 };
 
+const FeatureCard = ({ image, title, description }: FeatureCardProps) => {
+  return (
+    <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+      <img src={image} alt={title} className="w-full h-64 object-cover" loading="lazy" />
+      <div className="p-8">
+        <h3 className="text-xl font-bold mb-2 text-soft-black">{title}</h3>
+        <p className="text-gray-500 text-sm leading-relaxed">{description}</p>
+      </div>
+    </div>
+  );
+};
+
+const TimelineItem = ({ time, title, desc, icon }: TimelineItemProps) => {
+  return (
+    <FadeInWhenVisible>
+      <div className="flex gap-8 items-start group">
+        <div className="z-10 bg-white border-2 border-hakka-blue text-hakka-blue p-2.5 rounded-full shadow-lg group-hover:bg-hakka-blue group-hover:text-white transition-all duration-500">
+          {icon}
+        </div>
+        <div className="flex-1">
+          <div className="flex items-baseline gap-4 mb-2 flex-wrap">
+            <span className="text-hakka-blue font-black text-lg tracking-tight font-mono">{time}</span>
+            <h3 className="text-2xl font-bold text-soft-black serif-title">{title}</h3>
+          </div>
+          <p className="text-gray-500 leading-loose text-lg font-light">{desc}</p>
+        </div>
+      </div>
+    </FadeInWhenVisible>
+  );
+};
+
+const galleryImages = [
+  { src: '/images/hero-museum.jpg', span: 'row-span-2', title: '臺灣客家文化館' },
+  { src: '/images/corridor.jpg', span: '', title: '寬敞走廊' },
+  { src: '/images/display-scene.jpg', span: '', title: '展示場景' },
+  { src: '/images/restaurant-meal.png', span: 'row-span-2', title: '餐食時光' },
+  { src: '/images/wheelchair-friendly.jpg', span: '', title: '輪椅友善' },
+  { src: '/images/family-outing.jpg', span: '', title: '家庭同行' },
+];
+
+const featureCards = [
+  {
+    image: '/images/transport-a-line.jpg',
+    title: '交通銜接更安心',
+    description: '活動規劃時會一併考量接送、轉乘與集合方式，降低家庭外出的負擔與不確定感。',
+  },
+  {
+    image: '/images/wheelchair-friendly.jpg',
+    title: '輪椅友善空間',
+    description: '以平坦動線、寬敞廊道與無障礙設施為重點，讓輪椅使用者與陪伴者更從容地參與整日活動。',
+  },
+  {
+    image: '/images/family-outing.jpg',
+    title: '闔家同行也自在',
+    description: '從長輩到孩子都能找到舒服的位置與節奏，讓這趟微旅行成為全家共同記得的好經驗。',
+  },
+];
+
+const supportCards = [
+  {
+    icon: <Accessibility className="text-hakka-blue" />,
+    title: '低門檻參與',
+    desc: '以小團制方式安排，不追求趕行程，而是讓每一戶都能在可被支持的節奏中安心參與。',
+  },
+  {
+    icon: <Heart className="text-red-300" />,
+    title: '貼近家庭需求',
+    desc: '活動前會先了解交通、移位、飲食、用藥與休息等需求，讓行前準備更完整。',
+  },
+  {
+    icon: <ShieldCheck className="text-sage-green" />,
+    title: '安全支持機制',
+    desc: '現場有人員協助點名、分組、補水與休息安排，必要時也能配合緊急應變流程。',
+  },
+  {
+    icon: <Sparkles className="text-amber-400" />,
+    title: '帶回家的好記憶',
+    desc: '不只是外出走走，更希望每個家庭都能累積一次被理解、被陪伴的正向經驗。',
+  },
+];
+
+const itinerary = [
+  {
+    time: '11:30',
+    title: '交通接送出發',
+    desc: '由工作人員協助安排接送與銜接，讓家庭能更安心地前往活動地點。',
+    icon: <Clock size={24} />,
+  },
+  {
+    time: '12:00',
+    title: '集合與午餐',
+    desc: '在舒適的用餐空間享用客家風味餐食，讓大家先放鬆、也先補充體力。',
+    icon: <Utensils size={24} />,
+  },
+  {
+    time: '13:00',
+    title: '相見歡與暖身',
+    desc: '由社工與工作人員帶領簡單互動，讓參與家庭彼此認識，也熟悉當日節奏。',
+    icon: <Accessibility size={24} />,
+  },
+  {
+    time: '13:40',
+    title: '文化館導覽與自由探索',
+    desc: '透過館內動線與展示空間，感受建築、光影與客家文化的層次。',
+    icon: <MapPin size={24} />,
+  },
+  {
+    time: '14:30',
+    title: '文化教育課程',
+    desc: '以「客家食．當好食」為主題，透過體驗與對話，認識客家生活智慧。',
+    icon: <Palette size={24} />,
+  },
+  {
+    time: '16:30',
+    title: '平安返程',
+    desc: '活動結束後整理返程，帶著照片、故事與放鬆過的心情回家。',
+    icon: <Heart size={24} />,
+  },
+];
+
 export default function App() {
   const { scrollYProgress } = useScroll();
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.05]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.15]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.04]);
 
   return (
     <div className="min-h-screen bg-warm-beige selection:bg-hakka-blue/30 overflow-x-hidden">
-      {/* Section 1: Hero */}
       <section className="relative h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
-        <motion.div
-          style={{ opacity: heroOpacity, scale: heroScale }}
-          className="absolute inset-0 z-0"
-        >
-          <img 
-            src="https://i.ibb.co/fd4tXd3X/image.jpg" 
-            alt="Taiwan Hakka Museum High Res" 
-            className="w-full h-full object-cover brightness-75"
-            referrerPolicy="no-referrer"
+        <motion.div style={{ opacity: heroOpacity, scale: heroScale }} className="absolute inset-0 z-0">
+          <img
+            src="/images/hero-museum.jpg"
+            alt="臺灣客家文化館"
+            className="w-full h-full object-cover brightness-[0.72]"
+            fetchPriority="high"
           />
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-warm-beige/10 to-warm-beige" />
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-warm-beige" />
         </motion.div>
-        
-        <div className="z-10 max-w-3xl">
+
+        <div className="z-10 max-w-4xl">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: 1.1 }}
             className="mb-8 inline-block"
           >
             <Sparkles className="text-white mx-auto mb-4" size={32} />
             <div className="text-white font-medium tracking-[0.2em] text-sm sm:text-base uppercase drop-shadow-lg space-y-2">
-              <p>中華民國珍珠社會福利服務協會</p>
-              <p className="tracking-[0.4em]">115年度苗栗縣身心障礙者服務中心(第一區) 家庭支持活動</p>
+              <p>苗栗縣身心障礙者服務中心（第一區）</p>
+              <p className="tracking-[0.35em]">115年度 家庭微旅行 FUN出門</p>
             </div>
           </motion.div>
-          
+
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.5 }}
+            transition={{ duration: 1, delay: 0.35 }}
             className="serif-title text-5xl sm:text-8xl text-white leading-tight mb-8 drop-shadow-2xl"
           >
-            好久，沒有一起<br />
-            <span className="text-hakka-blue-light">去旅行了。</span>
+            第一場次
+            <br />
+            <span className="text-hakka-blue-light">客家食．當好食</span>
           </motion.h1>
-          
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, delay: 1 }}
-            className="text-white/90 text-xl sm:text-2xl leading-relaxed max-w-xl mx-auto font-light drop-shadow-lg"
+            transition={{ duration: 1.2, delay: 0.7 }}
+            className="text-white/90 text-xl sm:text-2xl leading-relaxed max-w-2xl mx-auto font-light drop-shadow-lg"
           >
-            給自己與家人一個喘息的下午。<br />
-            這一次，我們陪您一起 FUN 出門。
+            一場適合身障家庭安心參與的小旅行。
+            <br />
+            從文化館、午餐到體驗活動，讓外出這件事重新變得輕鬆又有期待。
           </motion.p>
         </div>
 
         <motion.div
           style={{ opacity: heroOpacity }}
           animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute bottom-10 text-sage-green cursor-pointer"
           onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
         >
@@ -132,147 +278,92 @@ export default function App() {
         </motion.div>
       </section>
 
-      {/* Section 2: Story */}
       <section className="py-32 px-8 sm:px-12 bg-white/40">
-        <div className="max-w-2xl mx-auto text-center space-y-20">
+        <div className="max-w-3xl mx-auto text-center space-y-12">
           <FadeInWhenVisible>
             <h2 className="text-3xl sm:text-4xl leading-relaxed text-soft-black serif-title">
-              「我們知道，出一趟門並不容易。」
+              讓「出門」不再是一件太累的事
             </h2>
           </FadeInWhenVisible>
-          
-          <div className="space-y-12">
-            <FadeInWhenVisible delay={0.3}>
-              <div className="text-xl sm:text-2xl leading-loose text-gray-600 font-light space-y-6">
-                <p>但外面的陽光很好，風景很美。</p>
-                <p>這一次，把擔憂交給我們，您只需要準備好放鬆的心情。</p>
-                <p className="text-hakka-blue font-medium">好好跟親朋好友出遊，創造回憶</p>
-              </div>
-            </FadeInWhenVisible>
-          </div>
+
+          <FadeInWhenVisible delay={0.2}>
+            <div className="text-xl sm:text-2xl leading-loose text-gray-600 font-light space-y-6">
+              <p>很多身障家庭並不是不想出門，而是卡在交通、照顧、無障礙動線與臨場不確定性。</p>
+              <p>這次我們用小團制、低門檻、可被支持的方式，讓家庭能在被陪伴的狀態下，重新感受一起外出的自在與安心。</p>
+              <p className="text-hakka-blue font-medium">不趕行程，不勉強體力，只把重要的體驗好好留住。</p>
+            </div>
+          </FadeInWhenVisible>
         </div>
       </section>
 
-      {/* Section 3: Scenery - The Mood */}
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
-        <motion.div
-          initial={{ scale: 1.2 }}
-          whileInView={{ scale: 1 }}
-          transition={{ duration: 2 }}
-          className="absolute inset-0"
-        >
-          <img 
-            src="https://i.ibb.co/fd4tXd3X/image.jpg" 
-            alt="靜謐山城" 
-            className="w-full h-full object-cover brightness-90"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-black/10" />
+        <motion.div initial={{ scale: 1.15 }} whileInView={{ scale: 1 }} transition={{ duration: 1.6 }} className="absolute inset-0">
+          <img src="/images/mood-scenery.jpg" alt="場地氛圍" className="w-full h-full object-cover brightness-90" loading="lazy" />
+          <div className="absolute inset-0 bg-black/15" />
         </motion.div>
-        
+
         <div className="relative z-10 text-center text-white px-6">
           <FadeInWhenVisible>
             <h2 className="serif-title text-4xl sm:text-6xl leading-tight">
-              靜謐山城<br />
-              在山與雲之間<br />
-              找回內心的平靜
+              建築、光影、餐食與陪伴
+              <br />
+              一起構成這趟旅程的溫度
             </h2>
           </FadeInWhenVisible>
         </div>
       </section>
 
-      {/* Section 4: Visual Journey - The Museum */}
-      <ImageSection 
-        src="https://i.ibb.co/Jjk4PxjJ/image.jpg"
-        subtitle="第一站：建築與光影的對話"
+      <ImageSection
+        src="/images/museum-detail.jpg"
+        subtitle="第一站"
         title="臺灣客家文化館"
-        description="這不只是一座博物館，更是一場視覺的饗宴。隱身於山丘起伏之間，建築師巧妙地運用玻璃與鋼鐵，勾勒出如雲朵般的輕盈曲線。當陽光穿透玻璃帷幕，灑落在平坦寬敞的廊道上，光影隨時光流轉。在這裡，輪椅也能自在穿梭，讓您在靜謐的氛圍中，重新發現生活的美好。"
+        description="場域本身就是這趟旅程的重要體驗。寬敞的動線、明亮的建築語彙與安定的氛圍，讓家庭不必急著追趕，而是能用自己的節奏走走看看、慢慢感受。"
       />
 
-      {/* Section 5: Visual Journey - The Food */}
-      <ImageSection 
-        src="https://i.ibb.co/Fkjn9pxf/image.png"
-        subtitle="第二站：舌尖上的溫暖記憶"
-        title="囍客餐廳的午間盛宴"
-        description="旅程的滋味，往往藏在熱騰騰的飯菜裡。我們特別為您安排在館內的囍客餐廳，享用一份充滿土地溫度的客家料理。選用在地當季食材，每一道菜都訴說著客家人的熱情與厚道。在舒適、無障礙的用餐空間裡，與家人共享這份難得的悠閒時光。"
+      <ImageSection
+        src="/images/restaurant-interior.png"
+        subtitle="第二站"
+        title="囍客餐廳的午間時光"
+        description="用餐不是匆匆填飽肚子，而是整趟活動裡很重要的休息與交流時刻。透過館內舒適的空間與客家風味料理，讓家庭在活動中也能保有放鬆感。"
         reverse
       />
 
-      {/* Section 6: Visual Journey - The Activity */}
-      <ImageSection 
-        src="https://i.ibb.co/6cZ3V0XW/image.png"
-        subtitle="第三站：手作一份感動"
-        title="文化教育課程：客家食‧當好食"
-        description="「當好食」是客家話對美味最真誠的讚美。在專業講師的引領下，我們將一起動手，透過簡單而有趣的環保手作，體會先民惜物、愛物的智慧。這不只是一場課程，更是一次心靈的交流。在歡笑聲中，親手製作一份屬於這趟旅程的獨特紀念，帶回家與親友分享。"
+      <ImageSection
+        src="/images/activity-workshop.png"
+        subtitle="第三站"
+        title="文化教育課程：客家食．當好食"
+        description="從吃的文化出發，讓參與者透過故事、觀察與互動，認識客家生活智慧。這不只是課程，也是一段能一起參與、一起留下記憶的過程。"
       />
 
-      {/* Section: Friendly Features */}
       <section className="py-32 px-6 sm:px-12 bg-hakka-blue-light/20">
         <div className="max-w-6xl mx-auto">
           <FadeInWhenVisible className="text-center mb-20">
-            <h2 className="serif-title text-4xl text-soft-black mb-4">友善設施與關懷</h2>
-            <p className="text-gray-500">我們用心，讓每一位家人都能自在同行</p>
+            <h2 className="serif-title text-4xl text-soft-black mb-4">友善亮點</h2>
+            <p className="text-gray-500">從交通到空間支持，盡量讓每一戶家庭都能安心參與。</p>
           </FadeInWhenVisible>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FadeInWhenVisible delay={0.1}>
-              <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-                <img src="https://i.ibb.co/0p7GR5B7/image.png" alt="視障友善" className="w-full h-64 object-cover" referrerPolicy="no-referrer" />
-                <div className="p-8">
-                  <h3 className="text-xl font-bold mb-2">視障友善導覽</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">提供專業的導覽服務，透過觸覺與聽覺，讓視障朋友也能深度體驗客家文化之美。</p>
-                </div>
-              </div>
-            </FadeInWhenVisible>
-            
-            <FadeInWhenVisible delay={0.2}>
-              <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-                <img src="https://i.ibb.co/vvjCVhpy/image.png" alt="輪椅友善" className="w-full h-64 object-cover" referrerPolicy="no-referrer" />
-                <div className="p-8">
-                  <h3 className="text-xl font-bold mb-2">輪椅友善空間</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">全館採用無障礙設計，寬敞的坡道與平坦的地面，讓輪椅使用者與陪伴者都能輕鬆穿梭。</p>
-                </div>
-              </div>
-            </FadeInWhenVisible>
-
-            <FadeInWhenVisible delay={0.3}>
-              <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-                <img src="https://i.ibb.co/2719Tb5L/image.png" alt="闔家出遊" className="w-full h-64 object-cover" referrerPolicy="no-referrer" />
-                <div className="p-8">
-                  <h3 className="text-xl font-bold mb-2">闔家共融時光</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">無論是長輩、孩童或身障家人，都能在這裡找到適合的角落，享受三代同堂的幸福。</p>
-                </div>
-              </div>
-            </FadeInWhenVisible>
+            {featureCards.map((item, index) => (
+              <FadeInWhenVisible key={item.title} delay={index * 0.1}>
+                <FeatureCard image={item.image} title={item.title} description={item.description} />
+              </FadeInWhenVisible>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Section 7: Mood Gallery */}
       <section className="py-32 px-6 sm:px-12 bg-white">
         <div className="max-w-6xl mx-auto">
           <FadeInWhenVisible className="text-center mb-20">
-            <h2 className="serif-title text-4xl text-soft-black mb-4">捕捉，旅途中的微光</h2>
-            <p className="text-gray-400">每一刻，都值得被溫柔對待</p>
+            <h2 className="serif-title text-4xl text-soft-black mb-4">現場氛圍</h2>
+            <p className="text-gray-400">用照片先感受這趟旅程會帶來的畫面與節奏。</p>
           </FadeInWhenVisible>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
-            {[
-              { src: "https://i.ibb.co/fd4tXd3X/image.jpg", span: "row-span-2", title: "靜謐山城" },
-              { src: "https://i.ibb.co/5hPJS7NL/image.jpg", span: "", title: "手作課程" },
-              { src: "https://i.ibb.co/WNTB0PKS/image.png", span: "", title: "親子時光" },
-              { src: "https://i.ibb.co/JWphPTY2/image.jpg", span: "row-span-2", title: "在地美食" },
-              { src: "https://i.ibb.co/hTzgcB1/image.png", span: "", title: "輪椅友善" },
-              { src: "https://i.ibb.co/QF69K5hW/image.png", span: "", title: "闔家出遊" },
-            ].map((img, index) => (
-              <FadeInWhenVisible key={index} delay={index * 0.1} className={img.span}>
+            {galleryImages.map((img, index) => (
+              <FadeInWhenVisible key={img.title} delay={index * 0.08} className={img.span}>
                 <div className="group relative h-full overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500">
-                  <img 
-                    src={img.src} 
-                    alt={img.title} 
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
-                    referrerPolicy="no-referrer"
-                  />
+                  <img src={img.src} alt={img.title} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" loading="lazy" />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
                     <span className="text-white text-sm font-medium tracking-widest">{img.title}</span>
                   </div>
@@ -283,44 +374,49 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 8: Transportation */}
       <section className="py-32 px-6 sm:px-12 bg-warm-beige/30">
         <div className="max-w-6xl mx-auto">
           <FadeInWhenVisible className="text-center mb-20">
-            <h2 className="serif-title text-4xl text-soft-black mb-4">交通資訊</h2>
-            <p className="text-gray-400">便捷的接駁，讓旅程更輕鬆</p>
+            <h2 className="serif-title text-4xl text-soft-black mb-4">交通與集合</h2>
+            <p className="text-gray-400">提早把交通資訊說清楚，家長比較能放心評估是否參加。</p>
           </FadeInWhenVisible>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <FadeInWhenVisible delay={0.1}>
               <div className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-all">
-                <h3 className="text-xl font-bold text-hakka-blue mb-4">接駁專車資訊</h3>
-                <img src="https://i.ibb.co/Z6f14x8X/A.jpg" alt="Transportation Info" className="w-full h-auto object-cover rounded-2xl mb-6" referrerPolicy="no-referrer" />
-                <img src="https://i.ibb.co/zHBZMbx3/image.jpg" alt="Architectural Beauty" className="w-full h-48 object-cover rounded-2xl mb-6" referrerPolicy="no-referrer" />
+                <h3 className="text-xl font-bold text-hakka-blue mb-4">接駁與路線參考</h3>
+                <img src="/images/transport-a-line.jpg" alt="交通路線" className="w-full h-auto object-cover rounded-2xl mb-6" loading="lazy" />
+                <img src="/images/map.jpg" alt="地圖資訊" className="w-full h-48 object-cover rounded-2xl mb-6" loading="lazy" />
                 <p className="text-gray-500 text-sm leading-relaxed">
-                  我們提供專屬無障礙接駁服務，從高鐵苗栗站出發，直達臺灣客家文化館。
-                  <br /><br />
-                  <span className="font-bold text-soft-black">接駁路線：</span>
-                  高鐵苗栗站 ↔ 客委會臺灣客家文化館 ↔ 三義木雕博物館
+                  會依實際參與家庭狀況安排集合與交通銜接，盡量降低轉乘壓力。
+                  <br />
+                  <br />
+                  <span className="font-bold text-soft-black">場地位置：</span>
+                  臺灣客家文化館，苗栗縣銅鑼鄉銅科南路 6 號。
                 </p>
               </div>
             </FadeInWhenVisible>
-            
+
             <FadeInWhenVisible delay={0.2}>
               <div className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-all flex flex-col justify-center">
                 <div className="space-y-6">
                   <div>
-                    <h4 className="font-bold text-soft-black mb-2">乘車提醒</h4>
-                    <p className="text-gray-500 text-sm">請於活動開始前 15 分鐘抵達接駁點，現場將有志工協助登車。</p>
+                    <h4 className="font-bold text-soft-black mb-2">活動規模</h4>
+                    <p className="text-gray-500 text-sm">每場約 3 至 6 戶、約 15 人左右，採小團制更能照顧個別需求。</p>
                   </div>
                   <div>
-                    <h4 className="font-bold text-soft-black mb-2">無障礙需求</h4>
-                    <p className="text-gray-500 text-sm">若需使用輪椅升降設備，請於報名時先行註記，以便安排專屬車位。</p>
+                    <h4 className="font-bold text-soft-black mb-2">行前確認</h4>
+                    <p className="text-gray-500 text-sm">報名後會由社工確認交通、用餐、移位與陪同需求，再安排最適合的參與方式。</p>
                   </div>
                   <div className="pt-4">
-                    <button className="w-full py-4 bg-hakka-blue text-white rounded-xl font-bold hover:bg-opacity-90 transition-all">
-                      下載詳細班次表
-                    </button>
+                    <a
+                      href="https://reurl.cc/xK5xaz"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full py-4 bg-hakka-blue text-white rounded-xl font-bold text-center hover:bg-soft-black transition-all"
+                    >
+                      查看報名資訊
+                    </a>
                   </div>
                 </div>
               </div>
@@ -329,63 +425,33 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 8: Itinerary Timeline */}
       <section className="py-32 px-6 sm:px-12 bg-warm-beige/50">
         <div className="max-w-3xl mx-auto">
           <FadeInWhenVisible className="text-center mb-20">
-            <h2 className="serif-title text-4xl text-soft-black mb-4">
-              漫遊行程安排
-            </h2>
-            <p className="text-hakka-blue font-medium tracking-widest">4月29日 星期三</p>
+            <h2 className="serif-title text-4xl text-soft-black mb-4">第一場流程</h2>
+            <p className="text-hakka-blue font-medium tracking-widest">4 月 29 日</p>
           </FadeInWhenVisible>
 
           <div className="space-y-16 relative before:absolute before:left-[23px] before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-hakka-blue before:to-sage-green">
-            {[
-              { time: "11:30", title: "專車接送", desc: "我們安排了專業無障礙交通接送，在約定地點等您，免去交通煩惱。", icon: <Clock size={24} /> },
-              { time: "12:00", title: "暖心午餐", desc: "於囍客餐廳享用精緻客家料理簡餐，在舒適的環境中補足能量。", icon: <Utensils size={24} /> },
-              { time: "13:00", title: "漫步文化館", desc: "寬敞平坦的無障礙空間，讓輪椅也能輕鬆暢遊。包含導覽解說與自由活動。", icon: <Accessibility size={24} /> },
-              { time: "14:30", title: "精彩活動", desc: "參與「客家食‧當好食」手作體驗，感受客家文化的深厚底蘊。", icon: <Palette size={24} /> },
-              { time: "16:30", title: "賦歸", desc: "帶著滿滿的回憶與笑容，我們將安全護送您回到溫暖的家。", icon: <MapPin size={24} /> },
-            ].map((item, index) => (
-              <FadeInWhenVisible key={index} delay={index * 0.15}>
-                <div className="flex gap-10 items-start group">
-                  <div className="z-10 bg-white border-2 border-hakka-blue text-hakka-blue p-2.5 rounded-full shadow-lg group-hover:bg-hakka-blue group-hover:text-white transition-all duration-500">
-                    {item.icon}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline gap-4 mb-2">
-                      <span className="text-hakka-blue font-black text-lg tracking-tighter font-mono">{item.time}</span>
-                      <h3 className="text-2xl font-bold text-soft-black serif-title">{item.title}</h3>
-                    </div>
-                    <p className="text-gray-500 leading-loose text-lg font-light">{item.desc}</p>
-                  </div>
-                </div>
-              </FadeInWhenVisible>
+            {itinerary.map((item) => (
+              <TimelineItem key={item.time + item.title} time={item.time} title={item.title} desc={item.desc} icon={item.icon} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Section 7: Support */}
       <section className="py-32 px-6 sm:px-12 bg-white">
         <div className="max-w-5xl mx-auto">
           <FadeInWhenVisible className="text-center mb-20">
-            <h2 className="serif-title text-4xl text-soft-black mb-6">請放心，我們全程都在</h2>
-            <p className="text-gray-400 max-w-md mx-auto">專業的團隊，只為給您最安心的陪伴</p>
+            <h2 className="serif-title text-4xl text-soft-black mb-6">支持安排</h2>
+            <p className="text-gray-400 max-w-md mx-auto">活動不是只安排景點，而是把家庭真正需要的支持一起放進來。</p>
           </FadeInWhenVisible>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-            {[
-              { icon: <Accessibility className="text-hakka-blue" />, title: "♿️ 行前勘查", desc: "所有動線與無障礙廁所，我們都已為您親自確認，確保輪椅通行無阻。" },
-              { icon: <Heart className="text-red-300" />, title: "🤝 專業陪同", desc: "社工與志工全程隨行，隨時協助移位、如廁或處理任何突發狀況。" },
-              { icon: <ShieldCheck className="text-sage-green" />, title: "🛡️ 彈性無壓", desc: "我們不趕行程，保留充足的緩衝休息時間，累了隨時都能停下歇息。" },
-              { icon: <Gift className="text-amber-400" />, title: "🎁 全額補助", desc: "本活動由社會福利計畫全額支持，受邀家庭無需負擔任何費用。" },
-            ].map((item, index) => (
-              <FadeInWhenVisible key={index} delay={index * 0.1}>
+            {supportCards.map((item, index) => (
+              <FadeInWhenVisible key={item.title} delay={index * 0.1}>
                 <div className="p-10 rounded-[2rem] bg-warm-beige/30 border border-black/5 hover:border-hakka-blue/20 hover:bg-white hover:shadow-xl transition-all duration-500 group">
-                  <div className="mb-6 transform group-hover:scale-110 transition-transform duration-500">
-                    {item.icon}
-                  </div>
+                  <div className="mb-6 transform group-hover:scale-110 transition-transform duration-500">{item.icon}</div>
                   <h3 className="text-2xl font-bold text-soft-black mb-4 serif-title">{item.title}</h3>
                   <p className="text-gray-500 leading-relaxed text-lg font-light">{item.desc}</p>
                 </div>
@@ -395,53 +461,51 @@ export default function App() {
         </div>
       </section>
 
-      {/* Section 8: CTA */}
       <section className="relative py-40 px-6 text-center overflow-hidden bg-sage-green/5">
-        <motion.div 
-          animate={{ 
-            rotate: [0, 5, 0],
-            scale: [1, 1.05, 1]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-20 -right-20 w-80 h-80 bg-hakka-blue/10 rounded-full blur-3xl" 
+        <motion.div
+          animate={{ rotate: [0, 5, 0], scale: [1, 1.05, 1] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+          className="absolute -top-20 -right-20 w-80 h-80 bg-hakka-blue/10 rounded-full blur-3xl"
         />
-        <motion.div 
-          animate={{ 
-            rotate: [0, -5, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-20 -left-20 w-96 h-96 bg-sage-green/10 rounded-full blur-3xl" 
+        <motion.div
+          animate={{ rotate: [0, -5, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+          className="absolute -bottom-20 -left-20 w-96 h-96 bg-sage-green/10 rounded-full blur-3xl"
         />
 
         <div className="relative z-10 max-w-3xl mx-auto">
           <FadeInWhenVisible>
             <h2 className="serif-title text-3xl sm:text-5xl text-soft-black mb-16 leading-tight">
-              4月29日，要不要和我們一起<br />去走走？
+              如果你也想讓家人
+              <br />
+              安心地一起出門走走
             </h2>
           </FadeInWhenVisible>
 
-          <FadeInWhenVisible delay={0.3}>
-            <a 
-              href="https://reurl.cc/xK5xaz" 
-              target="_blank" 
+          <FadeInWhenVisible delay={0.2}>
+            <a
+              href="https://reurl.cc/xK5xaz"
+              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-4 bg-hakka-blue text-white px-12 py-6 rounded-full text-xl font-bold shadow-2xl shadow-hakka-blue/40 hover:bg-soft-black hover:-translate-y-2 transition-all duration-500 group"
             >
-              <span>👉 點我了解報名資訊與評估</span>
+              <span>立即查看報名表單</span>
               <Sparkles className="group-hover:animate-pulse" size={20} />
             </a>
           </FadeInWhenVisible>
 
-          <FadeInWhenVisible delay={0.6}>
+          <FadeInWhenVisible delay={0.45}>
             <div className="mt-24 space-y-6">
               <div className="flex items-center justify-center gap-3 text-gray-400">
                 <div className="w-8 h-px bg-gray-200" />
-                <span className="text-sm tracking-[0.2em] uppercase">聯絡我們</span>
+                <span className="text-sm tracking-[0.2em] uppercase">聯絡資訊</span>
                 <div className="w-8 h-px bg-gray-200" />
               </div>
               <div className="space-y-2">
-                <p className="text-gray-600 text-lg">037-260820 分機 607 李社工</p>
+                <p className="text-gray-600 text-lg inline-flex items-center gap-2">
+                  <Phone size={18} />
+                  037-260820 分機 607 李社工
+                </p>
                 <p className="text-gray-400 text-sm">苗栗縣身心障礙者服務中心（第一區）</p>
               </div>
             </div>
@@ -449,13 +513,12 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-16 px-6 border-t border-black/5 text-center bg-white">
         <p className="text-gray-400 text-xs tracking-[0.3em] uppercase mb-4">
-          苗栗縣政府 主辦 · 中華民國珍珠社會福利服務協會 承辦
+          FAMILY MICRO TRIP INVITATION
         </p>
         <p className="text-gray-300 text-[10px] tracking-widest">
-          本活動由 115 年度苗栗縣身心障礙者服務中心計畫(第一區) 經費支持
+          115年度 家庭微旅行 FUN出門 第一場次邀請頁
         </p>
       </footer>
     </div>
