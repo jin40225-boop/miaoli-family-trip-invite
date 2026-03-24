@@ -34,14 +34,14 @@ type TimelineItemProps = {
   icon: React.ReactNode;
 };
 
-const FadeInWhenVisible = ({
-  children,
-  delay = 0,
-  className = '',
-}: {
+const FadeInWhenVisible: React.FC<{
   children: React.ReactNode;
   delay?: number;
   className?: string;
+}> = ({
+  children,
+  delay = 0,
+  className = '',
 }) => {
   return (
     <motion.div
@@ -56,13 +56,13 @@ const FadeInWhenVisible = ({
   );
 };
 
-const ImageSection = ({
+const ImageSection: React.FC<ImageSectionProps> = ({
   src,
   title,
   subtitle,
   description,
   reverse = false,
-}: ImageSectionProps) => {
+}) => {
   return (
     <section
       className={`py-24 px-6 sm:px-12 flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-12 max-w-6xl mx-auto`}
@@ -91,7 +91,7 @@ const ImageSection = ({
   );
 };
 
-const FeatureCard = ({ image, title, description }: FeatureCardProps) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ image, title, description }) => {
   return (
     <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
       <img src={image} alt={title} className="w-full h-64 object-cover" loading="lazy" />
@@ -103,7 +103,7 @@ const FeatureCard = ({ image, title, description }: FeatureCardProps) => {
   );
 };
 
-const TimelineItem = ({ time, title, desc, icon }: TimelineItemProps) => {
+const TimelineItem: React.FC<TimelineItemProps> = ({ time, title, desc, icon }) => {
   return (
     <FadeInWhenVisible>
       <div className="flex gap-8 items-start group">
@@ -215,13 +215,14 @@ export default function App() {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.15]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 1.04]);
+  const asset = (name: string) => `${import.meta.env.BASE_URL}images/${name}`;
 
   return (
     <div className="min-h-screen bg-warm-beige selection:bg-hakka-blue/30 overflow-x-hidden">
       <section className="relative h-screen flex flex-col items-center justify-center px-6 text-center overflow-hidden">
         <motion.div style={{ opacity: heroOpacity, scale: heroScale }} className="absolute inset-0 z-0">
           <img
-            src="/images/hero-museum.jpg"
+            src={asset('hero-museum.jpg')}
             alt="臺灣客家文化館"
             className="w-full h-full object-cover brightness-[0.72]"
             fetchPriority="high"
@@ -298,7 +299,7 @@ export default function App() {
 
       <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
         <motion.div initial={{ scale: 1.15 }} whileInView={{ scale: 1 }} transition={{ duration: 1.6 }} className="absolute inset-0">
-          <img src="/images/mood-scenery.jpg" alt="場地氛圍" className="w-full h-full object-cover brightness-90" loading="lazy" />
+          <img src={asset('mood-scenery.jpg')} alt="場地氛圍" className="w-full h-full object-cover brightness-90" loading="lazy" />
           <div className="absolute inset-0 bg-black/15" />
         </motion.div>
 
@@ -314,14 +315,14 @@ export default function App() {
       </section>
 
       <ImageSection
-        src="/images/museum-detail.jpg"
+        src={asset('museum-detail.jpg')}
         subtitle="第一站"
         title="臺灣客家文化館"
         description="場域本身就是這趟旅程的重要體驗。寬敞的動線、明亮的建築語彙與安定的氛圍，讓家庭不必急著追趕，而是能用自己的節奏走走看看、慢慢感受。"
       />
 
       <ImageSection
-        src="/images/restaurant-interior.png"
+        src={asset('restaurant-interior.png')}
         subtitle="第二站"
         title="囍客餐廳的午間時光"
         description="用餐不是匆匆填飽肚子，而是整趟活動裡很重要的休息與交流時刻。透過館內舒適的空間與客家風味料理，讓家庭在活動中也能保有放鬆感。"
@@ -329,7 +330,7 @@ export default function App() {
       />
 
       <ImageSection
-        src="/images/activity-workshop.png"
+        src={asset('activity-workshop.png')}
         subtitle="第三站"
         title="文化教育課程：客家食．當好食"
         description="從吃的文化出發，讓參與者透過故事、觀察與互動，認識客家生活智慧。這不只是課程，也是一段能一起參與、一起留下記憶的過程。"
@@ -345,7 +346,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featureCards.map((item, index) => (
               <FadeInWhenVisible key={item.title} delay={index * 0.1}>
-                <FeatureCard image={item.image} title={item.title} description={item.description} />
+                <FeatureCard image={asset(item.image.replace('/images/', ''))} title={item.title} description={item.description} />
               </FadeInWhenVisible>
             ))}
           </div>
@@ -363,7 +364,7 @@ export default function App() {
             {galleryImages.map((img, index) => (
               <FadeInWhenVisible key={img.title} delay={index * 0.08} className={img.span}>
                 <div className="group relative h-full overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500">
-                  <img src={img.src} alt={img.title} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" loading="lazy" />
+                  <img src={asset(img.src.replace('/images/', ''))} alt={img.title} className="w-full h-full object-cover hover:scale-110 transition-transform duration-700" loading="lazy" />
                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-4">
                     <span className="text-white text-sm font-medium tracking-widest">{img.title}</span>
                   </div>
@@ -385,8 +386,8 @@ export default function App() {
             <FadeInWhenVisible delay={0.1}>
               <div className="bg-white p-8 rounded-3xl shadow-sm hover:shadow-md transition-all">
                 <h3 className="text-xl font-bold text-hakka-blue mb-4">接駁與路線參考</h3>
-                <img src="/images/transport-a-line.jpg" alt="交通路線" className="w-full h-auto object-cover rounded-2xl mb-6" loading="lazy" />
-                <img src="/images/map.jpg" alt="地圖資訊" className="w-full h-48 object-cover rounded-2xl mb-6" loading="lazy" />
+                <img src={asset('transport-a-line.jpg')} alt="交通路線" className="w-full h-auto object-cover rounded-2xl mb-6" loading="lazy" />
+                <img src={asset('map.jpg')} alt="地圖資訊" className="w-full h-48 object-cover rounded-2xl mb-6" loading="lazy" />
                 <p className="text-gray-500 text-sm leading-relaxed">
                   會依實際參與家庭狀況安排集合與交通銜接，盡量降低轉乘壓力。
                   <br />
